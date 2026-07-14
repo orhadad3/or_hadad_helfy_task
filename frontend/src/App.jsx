@@ -3,6 +3,7 @@ import TaskForm from "./components/TaskForm";
 import TaskList from "./components/TaskList";
 import {
   createTask,
+  deleteTask,
   getTasks,
   updateTask,
 } from "./services/taskService";
@@ -12,6 +13,7 @@ function App() {
   const [editTask, setEditTask] = useState(null);
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [deletingId, setDeletingId] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
 
   async function saveTask(taskData) {
@@ -44,6 +46,35 @@ function App() {
       return false;
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function removeTask(task) {
+    const userClickedOk = window.confirm(
+      `Delete "${task.title}"?`
+    );
+
+    if (!userClickedOk) {
+      return;
+    }
+
+    setErrorMessage("");
+    setDeletingId(task.id);
+
+    try {
+      await deleteTask(task.id);
+
+      setTasks((oldTasks) =>
+        oldTasks.filter((item) => item.id !== task.id)
+      );
+
+      if (editTask?.id === task.id) {
+        setEditTask(null);
+      }
+    } catch (error) {
+      setErrorMessage(error.message);
+    } finally {
+      setDeletingId(null);
     }
   }
 
@@ -94,10 +125,12 @@ function App() {
         <p role="alert">{errorMessage}</p>
       )}
 
-      {!loading && !errorMessage && (
+      {!loading && (
         <TaskList
           tasks={tasks}
           onEdit={setEditTask}
+          onDelete={removeTask}
+          deletingId={deletingId}
         />
       )}
     </main>

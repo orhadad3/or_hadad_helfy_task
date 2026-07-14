@@ -1,6 +1,11 @@
 import TaskItem from "./TaskItem";
 
-function TaskList({ tasks, onEdit }) {
+function TaskList({
+    tasks,
+    onEdit,
+    onDelete,
+    deletingId,
+}) {
     if (tasks.length === 0) {
         return <p>No tasks yet</p>;
     }
@@ -12,6 +17,8 @@ function TaskList({ tasks, onEdit }) {
                     key={task.id}
                     task={task}
                     onEdit={onEdit}
+                    onDelete={onDelete}
+                    deleting={deletingId === task.id}
                 />
             ))}
         </section>
