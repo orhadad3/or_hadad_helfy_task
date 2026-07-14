@@ -44,7 +44,13 @@ export function updateTask(taskId, task) {
 }
 
 export function deleteTask(taskId) {
-  return request(`/${taskId}`, {
-    method: "DELETE",
-  });
+    return request(`/${taskId}`, {
+        method: "DELETE",
+    });
+}
+
+export function toggleTask(taskId) {
+    return request(`/${taskId}/toggle`, {
+        method: "PATCH",
+    });
 }

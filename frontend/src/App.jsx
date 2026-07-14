@@ -5,6 +5,7 @@ import {
   createTask,
   deleteTask,
   getTasks,
+  toggleTask,
   updateTask,
 } from "./services/taskService";
 
@@ -13,6 +14,7 @@ function App() {
   const [editTask, setEditTask] = useState(null);
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [changingId, setChangingId] = useState(null);
   const [deletingId, setDeletingId] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -78,6 +80,25 @@ function App() {
     }
   }
 
+  async function changeTaskStatus(task) {
+    setErrorMessage("");
+    setChangingId(task.id);
+
+    try {
+      const changedTask = await toggleTask(task.id);
+
+      setTasks((oldTasks) =>
+        oldTasks.map((item) =>
+          item.id === changedTask.id ? changedTask : item
+        )
+      );
+    } catch (error) {
+      setErrorMessage(error.message);
+    } finally {
+      setChangingId(null);
+    }
+  }
+
   useEffect(() => {
     const controller = new AbortController();
 
@@ -129,7 +150,9 @@ function App() {
         <TaskList
           tasks={tasks}
           onEdit={setEditTask}
+          onToggle={changeTaskStatus}
           onDelete={removeTask}
+          changingId={changingId}
           deletingId={deletingId}
         />
       )}
