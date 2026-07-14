@@ -1,0 +1,60 @@
+.task-carousel {
+    width: 100%;
+}
+
+.carousel-window {
+    width: 100%;
+    overflow: hidden;
+}
+
+.carousel-track {
+    display: flex;
+    width: max-content;
+    animation: carousel-move var(--carousel-time) linear infinite;
+    will-change: transform;
+}
+
+.carousel-group {
+    display: flex;
+    gap: 16px;
+    padding-right: 16px;
+}
+
+.carousel-copy {
+    pointer-events: none;
+}
+
+.carousel-window:hover .carousel-track,
+.carousel-window:focus-within .carousel-track {
+    animation-play-state: paused;
+}
+
+.task-card {
+    flex: 0 0 min(280px, 80vw);
+    width: min(280px, 80vw);
+    padding: 16px;
+    border: 1px solid #cccccc;
+    border-radius: 8px;
+    background: #ffffff;
+}
+
+.single-task {
+    display: flex;
+}
+
+@keyframes carousel-move {
+    to {
+        transform: translateX(-50%);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .carousel-track {
+        animation: none;
+        transform: none;
+    }
+
+    .carousel-copy {
+        display: none;
+    }
+}

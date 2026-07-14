@@ -5,8 +5,10 @@ function TaskItem({
     onDelete,
     changing,
     deleting,
+    copy = false,
 }) {
     const busy = changing || deleting;
+    const tabIndex = copy ? -1 : undefined;
 
     let statusButtonText = task.completed
         ? "Mark pending"
@@ -17,7 +19,7 @@ function TaskItem({
     }
 
     return (
-        <article>
+        <article className="task-card">
             <h3>{task.title}</h3>
             <p>{task.description}</p>
             <p>Priority: {task.priority}</p>
@@ -27,6 +29,7 @@ function TaskItem({
                 type="button"
                 onClick={() => onEdit(task)}
                 disabled={busy}
+                tabIndex={tabIndex}
             >
                 Edit
             </button>
@@ -35,6 +38,7 @@ function TaskItem({
                 type="button"
                 onClick={() => onToggle(task)}
                 disabled={busy}
+                tabIndex={tabIndex}
             >
                 {statusButtonText}
             </button>
@@ -43,6 +47,7 @@ function TaskItem({
                 type="button"
                 onClick={() => onDelete(task)}
                 disabled={busy}
+                tabIndex={tabIndex}
             >
                 {deleting ? "Deleting..." : "Delete"}
             </button>
