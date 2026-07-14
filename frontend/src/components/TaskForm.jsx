@@ -45,57 +45,84 @@ function TaskForm({ task, onSave, onCancel, saving }) {
     }
 
     return (
-        <section aria-labelledby="task-form-heading">
+        <section
+            className="task-form-section"
+            aria-labelledby="task-form-heading"
+        >
             <h2 id="task-form-heading">
-                {editing ? "Edit task" : "Add a task"}
+                <span className="form-icon" aria-hidden="true">
+                    +
+                </span>
+                {editing ? "Edit Task" : "Add a New Task"}
             </h2>
 
-            <form onSubmit={handleSubmit}>
-                <label htmlFor="task-title">Title</label>
-                <input
-                    id="task-title"
-                    type="text"
-                    value={title}
-                    onChange={(event) => setTitle(event.target.value)}
-                    disabled={saving}
-                    required
-                />
+            <form className="task-form" onSubmit={handleSubmit}>
+                <div className="form-field">
+                    <label htmlFor="task-title">Title</label>
+                    <input
+                        id="task-title"
+                        type="text"
+                        value={title}
+                        onChange={(event) => setTitle(event.target.value)}
+                        placeholder="What needs to be done?"
+                        disabled={saving}
+                        required
+                    />
+                </div>
 
-                <label htmlFor="task-description">Description</label>
-                <textarea
-                    id="task-description"
-                    value={description}
-                    onChange={(event) => setDescription(event.target.value)}
-                    disabled={saving}
-                    required
-                />
+                <div className="form-field description-field">
+                    <label htmlFor="task-description">Description</label>
+                    <textarea
+                        id="task-description"
+                        value={description}
+                        onChange={(event) =>
+                            setDescription(event.target.value)
+                        }
+                        placeholder="Add some details..."
+                        disabled={saving}
+                        required
+                    />
+                </div>
 
-                <label htmlFor="task-priority">Priority</label>
-                <select
-                    id="task-priority"
-                    value={priority}
-                    onChange={(event) => setPriority(event.target.value)}
-                    disabled={saving}
-                >
-                    <option value="low">Low</option>
-                    <option value="medium">Medium</option>
-                    <option value="high">High</option>
-                </select>
-
-                {errorMessage && <p role="alert">{errorMessage}</p>}
-
-                <button type="submit" disabled={saving}>
-                    {buttonText}
-                </button>
-
-                {editing && (
-                    <button
-                        type="button"
-                        onClick={onCancel}
+                <div className="form-field">
+                    <label htmlFor="task-priority">Priority</label>
+                    <select
+                        id="task-priority"
+                        value={priority}
+                        onChange={(event) => setPriority(event.target.value)}
                         disabled={saving}
                     >
-                        Cancel
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+
+                <div className="form-actions">
+                    <button
+                        className="primary-button"
+                        type="submit"
+                        disabled={saving}
+                    >
+                        {buttonText}
                     </button>
+
+                    {editing && (
+                        <button
+                            className="secondary-button"
+                            type="button"
+                            onClick={onCancel}
+                            disabled={saving}
+                        >
+                            Cancel
+                        </button>
+                    )}
+                </div>
+
+                {errorMessage && (
+                    <p className="error-message form-error" role="alert">
+                        {errorMessage}
+                    </p>
                 )}
             </form>
         </section>

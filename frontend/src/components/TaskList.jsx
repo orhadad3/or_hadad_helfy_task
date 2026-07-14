@@ -14,33 +14,34 @@ function TaskList({
         return <p>{emptyMessage}</p>;
     }
 
-    function showTasks(copy = false) {
+    function showTasks(isCopy = false) {
         return tasks.map((task) => (
             <TaskItem
-                key={`${copy ? "copy" : "task"}-${task.id}`}
+                key={`${isCopy ? "copy" : "task"}-${task.id}`}
                 task={task}
                 onEdit={onEdit}
                 onToggle={onToggle}
                 onDelete={onDelete}
                 changing={changingId === task.id}
                 deleting={deletingId === task.id}
-                copy={copy}
             />
         ));
     }
 
     if (tasks.length === 1) {
         return (
-            <section className="task-carousel" aria-label="Tasks">
-                <div className="single-task">{showTasks()}</div>
-            </section>
+            <div className="task-carousel" aria-label="Tasks">
+                <div className="single-task">
+                    {showTasks()}
+                </div>
+            </div>
         );
     }
 
     const loopTime = Math.max(tasks.length * 8, 20);
 
     return (
-        <section className="task-carousel" aria-label="Tasks">
+        <div className="task-carousel" aria-label="Tasks">
             <div className="carousel-window">
                 <div
                     className="carousel-track"
@@ -50,15 +51,12 @@ function TaskList({
                         {showTasks()}
                     </div>
 
-                    <div
-                        className="carousel-group carousel-copy"
-                        aria-hidden="true"
-                    >
+                    <div className="carousel-group carousel-copy">
                         {showTasks(true)}
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
     );
 }
 

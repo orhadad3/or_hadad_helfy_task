@@ -1,3 +1,4 @@
+import "./styles/app.css";
 import { useEffect, useState } from "react";
 import TaskForm from "./components/TaskForm";
 import TaskList from "./components/TaskList";
@@ -140,44 +141,73 @@ function App() {
     emptyMessage = "No pending tasks.";
   }
 
+  let taskHeading = "All Tasks";
+
+  if (filter === "completed") {
+    taskHeading = "Completed Tasks";
+  }
+
+  if (filter === "pending") {
+    taskHeading = "Active Tasks";
+  }
+
   return (
-    <main>
-      <header>
-        <h1>Task Manager</h1>
-        <p>Create, organize, and complete your tasks.</p>
+    <>
+      <header className="top-bar">
+        <div className="top-bar-content">
+          <span className="brand">Task Manager</span>
+        </div>
       </header>
 
-      <TaskForm
-        key={editTask?.id || "create"}
-        task={editTask}
-        onSave={saveTask}
-        onCancel={() => setEditTask(null)}
-        saving={saving}
-      />
-
-      <TaskFilter
-        filter={filter}
-        onChange={setFilter}
-      />
-
-      {loading && <p role="status">Loading tasks...</p>}
-
-      {errorMessage && (
-        <p role="alert">{errorMessage}</p>
-      )}
-
-      {!loading && (
-        <TaskList
-          tasks={shownTasks}
-          onEdit={setEditTask}
-          onToggle={changeTaskStatus}
-          onDelete={removeTask}
-          changingId={changingId}
-          deletingId={deletingId}
-          emptyMessage={emptyMessage}
+      <main className="app">
+        <TaskForm
+          key={editTask?.id || "create"}
+          task={editTask}
+          onSave={saveTask}
+          onCancel={() => setEditTask(null)}
+          saving={saving}
         />
-      )}
-    </main>
+
+        <TaskFilter
+          filter={filter}
+          onChange={setFilter}
+        />
+
+        {errorMessage && (
+          <p className="error-message" role="alert">
+            {errorMessage}
+          </p>
+        )}
+
+        <section
+          className="tasks-section"
+          aria-labelledby="tasks-heading"
+        >
+          <div className="tasks-heading">
+            <h2 id="tasks-heading">{taskHeading}</h2>
+            <span>{shownTasks.length} tasks</span>
+          </div>
+
+          {loading && (
+            <p className="loading-message" role="status">
+              Loading tasks...
+            </p>
+          )}
+
+          {!loading && (
+            <TaskList
+              tasks={shownTasks}
+              onEdit={setEditTask}
+              onToggle={changeTaskStatus}
+              onDelete={removeTask}
+              changingId={changingId}
+              deletingId={deletingId}
+              emptyMessage={emptyMessage}
+            />
+          )}
+        </section>
+      </main>
+    </>
   );
 }
 
