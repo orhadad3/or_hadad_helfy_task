@@ -1,11 +1,51 @@
 import { useEffect, useState } from "react";
+import TaskForm from "./components/TaskForm";
 import TaskList from "./components/TaskList";
-import { getTasks } from "./services/taskService";
+import {
+  createTask,
+  getTasks,
+  updateTask,
+} from "./services/taskService";
 
 function App() {
   const [tasks, setTasks] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [editTask, setEditTask] = useState(null);
+  const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  async function saveTask(taskData) {
+    setErrorMessage("");
+    setSaving(true);
+
+    try {
+      if (editTask) {
+        const updatedTask = await updateTask(
+          editTask.id,
+          taskData
+        );
+
+        setTasks((oldTasks) =>
+          oldTasks.map((task) =>
+            task.id === updatedTask.id ? updatedTask : task
+          )
+        );
+
+        setEditTask(null);
+      } else {
+        const newTask = await createTask(taskData);
+
+        setTasks((oldTasks) => [...oldTasks, newTask]);
+      }
+
+      return true;
+    } catch (error) {
+      setErrorMessage(error.message);
+      return false;
+    } finally {
+      setSaving(false);
+    }
+  }
 
   useEffect(() => {
     const controller = new AbortController();
@@ -17,13 +57,13 @@ function App() {
         });
 
         setTasks(data);
-      } catch (requestError) {
-        if (requestError.name !== "AbortError") {
-          setError(requestError.message);
+      } catch (error) {
+        if (error.name !== "AbortError") {
+          setErrorMessage(error.message);
         }
       } finally {
         if (!controller.signal.aborted) {
-          setIsLoading(false);
+          setLoading(false);
         }
       }
     }
@@ -40,9 +80,26 @@ function App() {
         <p>Create, organize, and complete your tasks.</p>
       </header>
 
-      { isLoading && <p role="status">Loading tasks...</p> }
-      { error && <p role="alert">{error}</p> }
-      { !isLoading && !error && <TaskList tasks={tasks} /> }
+      <TaskForm
+        key={editTask?.id || "create"}
+        task={editTask}
+        onSave={saveTask}
+        onCancel={() => setEditTask(null)}
+        saving={saving}
+      />
+
+      {loading && <p role="status">Loading tasks...</p>}
+
+      {errorMessage && (
+        <p role="alert">{errorMessage}</p>
+      )}
+
+      {!loading && !errorMessage && (
+        <TaskList
+          tasks={tasks}
+          onEdit={setEditTask}
+        />
+      )}
     </main>
   );
 }

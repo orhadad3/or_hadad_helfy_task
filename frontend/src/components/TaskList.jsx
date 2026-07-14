@@ -1,4 +1,6 @@
-function TaskList({ tasks }) {
+import TaskItem from "./TaskItem";
+
+function TaskList({ tasks, onEdit }) {
     if (tasks.length === 0) {
         return <p>No tasks yet</p>;
     }
@@ -6,12 +8,11 @@ function TaskList({ tasks }) {
     return (
         <section aria-label="Tasks">
             {tasks.map((task) => (
-                <article key={task.id}>
-                    <strong>{task.title}</strong>
-                    <p>{task.description}</p>
-                    <p>Priority: {task.priority}</p>
-                    <p>Status: {task.completed ? "Completed" : "Pending"}</p>
-                </article>
+                <TaskItem
+                    key={task.id}
+                    task={task}
+                    onEdit={onEdit}
+                />
             ))}
         </section>
     );

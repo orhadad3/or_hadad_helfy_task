@@ -22,3 +22,23 @@ async function request(path = "", options = {}) {
 export function getTasks(options = {}) {
     return request("", options);
 }
+
+export function createTask(task) {
+    return request("", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(task),
+    });
+}
+
+export function updateTask(taskId, task) {
+    return request(`/${taskId}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(task),
+    });
+}
