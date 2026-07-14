@@ -7,9 +7,10 @@ function TaskList({
     onDelete,
     changingId,
     deletingId,
+    emptyMessage,
 }) {
     if (tasks.length === 0) {
-        return <p>No tasks yet. Create your first task.</p>;
+        return <p>{emptyMessage}</p>;
     }
 
     return (

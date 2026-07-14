@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import TaskForm from "./components/TaskForm";
 import TaskList from "./components/TaskList";
+import TaskFilter from "./components/TaskFilter";
 import {
   createTask,
   deleteTask,
@@ -17,6 +18,7 @@ function App() {
   const [changingId, setChangingId] = useState(null);
   const [deletingId, setDeletingId] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
+  const [filter, setFilter] = useState("all");
 
   async function saveTask(taskData) {
     setErrorMessage("");
@@ -125,6 +127,19 @@ function App() {
     return () => controller.abort();
   }, []);
 
+  let shownTasks = tasks;
+  let emptyMessage = "No tasks yet.";
+
+  if (filter === "completed") {
+    shownTasks = tasks.filter((task) => task.completed);
+    emptyMessage = "No completed tasks.";
+  }
+
+  if (filter === "pending") {
+    shownTasks = tasks.filter((task) => !task.completed);
+    emptyMessage = "No pending tasks.";
+  }
+
   return (
     <main>
       <header>
@@ -140,6 +155,11 @@ function App() {
         saving={saving}
       />
 
+      <TaskFilter
+        filter={filter}
+        onChange={setFilter}
+      />
+
       {loading && <p role="status">Loading tasks...</p>}
 
       {errorMessage && (
@@ -148,12 +168,13 @@ function App() {
 
       {!loading && (
         <TaskList
-          tasks={tasks}
+          tasks={shownTasks}
           onEdit={setEditTask}
           onToggle={changeTaskStatus}
           onDelete={removeTask}
           changingId={changingId}
           deletingId={deletingId}
+          emptyMessage={emptyMessage}
         />
       )}
     </main>
